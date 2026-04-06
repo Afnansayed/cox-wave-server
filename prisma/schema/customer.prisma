@@ -1,0 +1,20 @@
+
+model Customer {
+  id               String    @id @default(uuid(7))
+  name             String
+  email            String    @unique
+  profile_picture  String?
+  phone_number     String?
+  address          String?
+  isDeleted        Boolean   @default(false)
+  deletedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user_id         String    @unique
+  user            User      @relation(fields: [user_id], references: [id])
+
+  @@index([email] , name: "customer_email_index")
+  @@index([isDeleted] , name: "customer_isDeleted_index")
+  @@map("customer")
+}

@@ -1,5 +1,6 @@
 import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
 
 interface IRegisterCustomer {
     name: string;
@@ -15,13 +16,41 @@ const registerCustomer = async (payload: IRegisterCustomer) => {
             email,
             password,
             name,
-            // role: "PATIENT" # better-auth will automatically set the default role to PATIENT, so we don't need to specify it here
+            // role: "customer" as default
         }
     })
     if(!data.user){
         throw new Error("Failed to register customer");
     }
-    return data;
+
+    try{
+        // crate a customer record in the database with the user_id from the auth service
+        const customer =  await prisma.$transaction(async(tx) => {
+            const createdCustomer = await tx.customer.create({
+                data: {
+                    user_id: data.user.id,
+                    name,
+                    email,
+                }
+            })
+         return createdCustomer;   
+        })
+
+        return{
+            ...data,
+            customer,
+        }
+
+    }catch(error){
+        console.log("transaction error:", error);
+        // if there is an error during the transaction, delete the user from the auth service to maintain data consistency
+        await prisma.user.delete({
+            where: {
+                id: data.user.id
+            }
+        });
+        throw new Error("Failed to register customer", { cause: error });
+    }
 }
 
 interface IloginUser  {
