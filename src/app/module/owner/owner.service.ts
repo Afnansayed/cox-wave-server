@@ -4,5 +4,6 @@ const createOwner = async () => {
 };
 
 export const ownerService = {
-    createOwner
+    createOwner,
+    
 }

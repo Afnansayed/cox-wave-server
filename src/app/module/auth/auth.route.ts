@@ -8,5 +8,6 @@ const router = Router();
 
 router.post('/register', validateRequest(createCustomerZodSchema), authController.registerCustomer);
 router.post('/login', authController.loginUser);
+router.post("/refresh-token", authController.getNewToken);
 
 export const authRoutes = router;
