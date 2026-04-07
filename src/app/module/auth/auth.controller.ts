@@ -95,7 +95,7 @@ const changePassword = catchAsync(
         const payload = req.body;
 
         const betterAuthSessionToken = req.cookies["better-auth.session_token"];
-        console.log({betterAuthSessionToken})
+        // console.log({betterAuthSessionToken})
 
         if (!betterAuthSessionToken) {
             throw new AppError(status.UNAUTHORIZED, "Session token is missing");

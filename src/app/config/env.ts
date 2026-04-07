@@ -12,6 +12,11 @@ interface EnvConfig {
     REFRESH_TOKEN_SECRET: string;
     ACCESS_TOKEN_EXPIRES_IN: string;
     REFRESH_TOKEN_EXPIRES_IN: string;
+    EMAIL_SENDER_SMTP_USER: string;
+    EMAIL_SENDER_SMTP_PASS: string;
+    EMAIL_SENDER_SMTP_HOST: string;
+    EMAIL_SENDER_SMTP_PORT: string;
+    EMAIL_SENDER_SMTP_FROM: string;
 }
 
 const loadEnvConfig = (): EnvConfig => {
@@ -24,7 +29,13 @@ const loadEnvConfig = (): EnvConfig => {
         "ACCESS_TOKEN_SECRET",
         "REFRESH_TOKEN_SECRET",
         "ACCESS_TOKEN_EXPIRES_IN",
-        "REFRESH_TOKEN_EXPIRES_IN"
+        "REFRESH_TOKEN_EXPIRES_IN",
+        "EMAIL_SENDER_SMTP_USER",
+        "EMAIL_SENDER_SMTP_PASS",
+        "EMAIL_SENDER_SMTP_HOST",
+        "EMAIL_SENDER_SMTP_PORT",
+        "EMAIL_SENDER_SMTP_FROM"
+
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -43,7 +54,12 @@ const loadEnvConfig = (): EnvConfig => {
         ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET as string,
         REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
         ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN as string,
-        REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN as string
+        REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN as string,
+        EMAIL_SENDER_SMTP_USER: process.env.EMAIL_SENDER_SMTP_USER as string,
+        EMAIL_SENDER_SMTP_PASS: process.env.EMAIL_SENDER_SMTP_PASS as string,
+        EMAIL_SENDER_SMTP_HOST: process.env.EMAIL_SENDER_SMTP_HOST as string,
+        EMAIL_SENDER_SMTP_PORT: process.env.EMAIL_SENDER_SMTP_PORT as string,
+        EMAIL_SENDER_SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM as string
 
     }
 }

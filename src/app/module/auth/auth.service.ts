@@ -197,7 +197,7 @@ const changePassword = async (
     }),
   });
 
-  console.log({session})
+//   console.log({session})
 
   if (!session) {
     throw new AppError(status.UNAUTHORIZED, "Invalid session");
