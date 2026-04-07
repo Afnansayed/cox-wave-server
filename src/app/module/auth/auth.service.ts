@@ -1,4 +1,6 @@
+import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
+import AppError from "../../errorHelpers/AppError";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 
@@ -20,7 +22,7 @@ const registerCustomer = async (payload: IRegisterCustomer) => {
         }
     })
     if(!data.user){
-        throw new Error("Failed to register customer");
+        throw new AppError(status.BAD_REQUEST, "Failed to register customer");
     }
 
     try{
@@ -49,7 +51,7 @@ const registerCustomer = async (payload: IRegisterCustomer) => {
                 id: data.user.id
             }
         });
-        throw new Error("Failed to register customer", { cause: error });
+        throw new AppError(status.BAD_REQUEST, "Failed to register customer");
     }
 }
 
@@ -69,10 +71,10 @@ const loginUser = async (payload: IloginUser) => {
     })
 
     if(data.user.isDeleted || data.user.status === UserStatus.DELETED){
-        throw new Error("User is deleted and cannot login");
+        throw new AppError(status.BAD_REQUEST, "User is deleted and cannot login");
     }
     if(data.user.status === UserStatus.BLOCKED){
-        throw new Error("User is blocked and cannot login");
+        throw new AppError(status.BAD_REQUEST, "User is blocked and cannot login");
     }
 
     return data;
