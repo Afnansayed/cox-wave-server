@@ -9,3 +9,28 @@ enum UserStatus {
     DELETED
     ACTIVE
 }
+
+enum  EventStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+enum BookingStatus {
+    PENDING
+    CONFIRMED
+    PROCESSING
+    COMPLETED
+    CANCELLED
+}
+
+enum PaymentStatus {
+    UNPAID
+    PAID
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

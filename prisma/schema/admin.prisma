@@ -1,5 +1,6 @@
 
-model Customer {
+
+model Admin {
   id               String    @id @default(uuid(7))
   name             String
   email            String    @unique
@@ -14,10 +15,7 @@ model Customer {
   user_id         String    @unique
   user            User      @relation(fields: [user_id], references: [id] , onDelete: Cascade)
 
-  bookings        Booking[]
-  reviews         Review[]
-
-  @@index([email] , name: "customer_email_index")
-  @@index([isDeleted] , name: "customer_isDeleted_index")
-  @@map("customer")
+  @@index([email] , name: "admin_email_index")
+  @@index([isDeleted] , name: "admin_isDeleted_index")
+  @@map("admin")
 }

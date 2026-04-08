@@ -1,0 +1,27 @@
+
+model Event {
+    id                String       @id @default(uuid(7))
+    title             String       @unique
+    description       String?
+    location          String?
+    images            String[]     @default([])
+    capacity          Int          @default(0)
+    remaining_seats   Int          @default(0)
+    per_person_price  Float
+    status            EventStatus  @default(PENDING)
+    isActive          Boolean      @default(false)
+    createdAt         DateTime     @default(now())
+    updatedAt         DateTime     @updatedAt
+
+    owner_id          String
+    owner             Owner        @relation(fields: [owner_id], references: [id] , onDelete: Cascade)
+
+    bookings          Booking[]
+    reviews           Review[]
+
+
+    @@index([title] , name: "event_title_index")
+    @@index([status] , name: "event_status_index")
+    @@index([isActive] , name: "event_isActive_index")
+    @@map("event")
+}

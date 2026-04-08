@@ -1,0 +1,28 @@
+model Review {
+  id           String        @id @default(uuid())
+
+  event_id     String
+  customer_id  String
+
+  rating       Int           
+  comment      String?
+
+  status       ReviewStatus  @default(PENDING)
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  event        Event         @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  customer     Customer      @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@index([event_id], name: "review_event_id_index")
+  @@index([customer_id], name: "review_customer_id_index")
+  @@index([status], name: "review_status_index")
+
+  // Prevent duplicate review per user per event
+  @@unique([event_id, customer_id], name: "unique_event_customer_review")
+
+  @@map("review")
+}

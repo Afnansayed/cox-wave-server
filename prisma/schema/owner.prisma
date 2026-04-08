@@ -1,0 +1,30 @@
+model Owner {
+  id               String    @id @default(uuid(7))
+  name             String
+  email            String    @unique
+  profile_picture  String?
+  phone_number     String?
+  address          String?
+  business_name    String?   @unique
+  description      String?
+  business_address String?
+  trade_license    String?   
+  bank_account     String?   @unique
+  rating           Float?    @default(0)
+  total_reviews    Int       @default(0)
+  isApproved       Boolean   @default(false)
+  isDeleted        Boolean   @default(false)
+  deletedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user_id         String    @unique
+  user            User      @relation(fields: [user_id], references: [id] , onDelete: Cascade)
+
+  events          Event[]
+
+  @@index([email] , name: "owner_email_index")
+  @@index([isDeleted] , name: "owner_isDeleted_index")
+  @@index([isApproved] , name: "owner_isApproved_index")
+  @@map("owner")
+}

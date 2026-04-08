@@ -1,0 +1,30 @@
+model Booking {
+  id             String         @id @default(uuid())
+
+  event_id       String
+  customer_id    String
+
+  seats          Int
+  total_amount   Float
+
+  status         BookingStatus  @default(PENDING)
+  payment_status PaymentStatus  @default(UNPAID)
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  // Relations
+  event          Event          @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  customer       Customer       @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+
+  payment         Payment?
+
+  // Indexes
+  @@index([event_id], name: "booking_event_id_index")
+  @@index([customer_id], name: "booking_customer_id_index")
+  @@index([status], name: "booking_status_index")
+  @@index([payment_status], name: "booking_payment_status_index")
+  @@index([createdAt], name: "booking_createdAt_index")
+
+  @@map("booking")
+}
