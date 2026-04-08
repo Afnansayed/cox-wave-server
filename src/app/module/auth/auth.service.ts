@@ -283,11 +283,94 @@ const verifyEmail = async (email: string, otp: string) => {
   return result;
 };
 
+const forgetPassword = async (email: string) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!isUserExist) {
+    throw new AppError(status.NOT_FOUND, "User with this email does not exist");
+  }
+
+  if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "User is deleted and cannot reset password",
+    );
+  }
+
+  if (!isUserExist.emailVerified) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Email is not verified. Please verify your email before resetting password",
+    );
+  }
+
+  await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email,
+    },
+  });
+};
+
+const resetPassword = async (
+  email: string,
+  otp: string,
+  newPassword: string,
+) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!isUserExist) {
+    throw new AppError(status.NOT_FOUND, "User with this email does not exist");
+  }
+  if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "User is deleted and cannot reset password",
+    );
+  }
+  if (!isUserExist.emailVerified) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Email is not verified. Please verify your email before resetting password",
+    );
+  }
+
+  await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password: newPassword,
+    },
+  });
+
+  if (isUserExist.needPasswordChange) {
+    await prisma.user.update({
+      where: { email },
+      data: {
+        needPasswordChange: false,
+      },
+    });
+  }
+
+  await prisma.session.deleteMany({
+    where: {
+      userId: isUserExist.id,
+    },
+  });
+
+
+};
+
 export const authService = {
     registerCustomer,
     loginUser,
     getNewToken,
     changePassword,
     logoutUser,
-    verifyEmail
+    verifyEmail,
+    forgetPassword,
+    resetPassword
 }
