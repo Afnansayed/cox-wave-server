@@ -1,6 +1,7 @@
+import { ICreateOwner } from "./owner.interface";
 
-const createOwner = async () => {
-    console.log("Creating Owner!!!!")
+const createOwner = async (payload: ICreateOwner) => {
+    console.log({payload})
 };
 
 export const ownerService = {

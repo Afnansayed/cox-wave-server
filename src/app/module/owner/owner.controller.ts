@@ -7,12 +7,10 @@ import { ownerService } from "./owner.service";
 
 const createOwner = catchAsync(
     async (req: Request, res: Response) => {
-        // const payload = req.body;
-       await ownerService.createOwner();
+        const payload = req.body;
+        console.log(req.file)
+       await ownerService.createOwner(payload);
          
-     
-
-   
         sendResponse(res, {
             httpStatusCode: status.OK,
             success: true,

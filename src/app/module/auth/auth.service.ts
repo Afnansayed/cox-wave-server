@@ -364,6 +364,8 @@ const resetPassword = async (
 
 };
 
+//todo: get my profile api in auth service which will return the user details from the auth service along with the customer details from the database if the user is a customer. This will be used in the frontend to display the user profile and also to check if the user is a customer or not.
+
 export const authService = {
     registerCustomer,
     loginUser,

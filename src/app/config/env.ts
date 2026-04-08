@@ -17,6 +17,9 @@ interface EnvConfig {
     EMAIL_SENDER_SMTP_HOST: string;
     EMAIL_SENDER_SMTP_PORT: string;
     EMAIL_SENDER_SMTP_FROM: string;
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string;
 }
 
 const loadEnvConfig = (): EnvConfig => {
@@ -34,8 +37,10 @@ const loadEnvConfig = (): EnvConfig => {
         "EMAIL_SENDER_SMTP_PASS",
         "EMAIL_SENDER_SMTP_HOST",
         "EMAIL_SENDER_SMTP_PORT",
-        "EMAIL_SENDER_SMTP_FROM"
-
+        "EMAIL_SENDER_SMTP_FROM",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET"
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -59,7 +64,10 @@ const loadEnvConfig = (): EnvConfig => {
         EMAIL_SENDER_SMTP_PASS: process.env.EMAIL_SENDER_SMTP_PASS as string,
         EMAIL_SENDER_SMTP_HOST: process.env.EMAIL_SENDER_SMTP_HOST as string,
         EMAIL_SENDER_SMTP_PORT: process.env.EMAIL_SENDER_SMTP_PORT as string,
-        EMAIL_SENDER_SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM as string
+        EMAIL_SENDER_SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM as string,
+        CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+        CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string
 
     }
 }
