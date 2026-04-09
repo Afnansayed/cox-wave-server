@@ -40,6 +40,7 @@ const getOwnerProfileById = async (ownerId: string) => {
     return owner;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateOwnerProfile = async (userId: string, payload: IUpdateOwner, files?: any) => {
     const owner = await prisma.owner.findUnique({
         where: { user_id: userId },
@@ -49,6 +50,7 @@ const updateOwnerProfile = async (userId: string, payload: IUpdateOwner, files?:
         throw new AppError(status.NOT_FOUND, "Owner profile not found");
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = { ...payload };
 
     if (files) {
