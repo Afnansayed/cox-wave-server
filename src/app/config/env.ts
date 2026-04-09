@@ -20,6 +20,11 @@ interface EnvConfig {
     CLOUDINARY_CLOUD_NAME: string;
     CLOUDINARY_API_KEY: string;
     CLOUDINARY_API_SECRET: string;
+    seedAdmin: {
+        ADMIN_EMAIL: string;
+        ADMIN_PASSWORD: string;
+        ADMIN_NAME: string;
+    }
 }
 
 const loadEnvConfig = (): EnvConfig => {
@@ -40,14 +45,17 @@ const loadEnvConfig = (): EnvConfig => {
         "EMAIL_SENDER_SMTP_FROM",
         "CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
-        "CLOUDINARY_API_SECRET"
+        "CLOUDINARY_API_SECRET",
+        "ADMIN_EMAIL",
+        "ADMIN_PASSWORD",
+        "ADMIN_NAME"
     ];
 
     requiredEnvVars.forEach((varName) => {
         if (!process.env[varName]) {
             throw new AppError(status.BAD_REQUEST, `Environment variable ${varName} is required but not defined.`);
-        }   
-        });
+        }
+    });
 
 
     return {
@@ -67,7 +75,12 @@ const loadEnvConfig = (): EnvConfig => {
         EMAIL_SENDER_SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM as string,
         CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
         CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
-        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string
+        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+        seedAdmin: {
+            ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
+            ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+            ADMIN_NAME: process.env.ADMIN_NAME as string
+        }
 
     }
 }
