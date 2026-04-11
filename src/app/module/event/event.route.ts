@@ -38,6 +38,20 @@ router.patch(
     eventController.updateEvent
 );
 
+// Update event status (Admin Only)
+router.patch(
+    '/:id/status',
+    checkAuth(Role.ADMIN),
+    eventController.updateStatus
+);
+
+// Update event active status (Admin Only)
+router.patch(
+    '/:id/active-status',
+    checkAuth(Role.OWNER),
+    eventController.updateActiveStatus
+);
+
 // Delete an event (Owner Only)
 router.delete(
     '/:id',

@@ -39,7 +39,6 @@ const createEvent = async (userId: string, payload: ICreateEvent, files?: { [fie
             images: images,
             owner_id: owner.id,
             status: EventStatus.PENDING,
-            isActive: false
         }
     });
 
@@ -68,6 +67,10 @@ const getAllEvents = async (filters: IEventFilters, options: IPaginationOptions)
 
     const whereCondition: Prisma.EventWhereInput =
         andConditions.length > 0 ? { AND: andConditions } : {};
+
+    whereCondition.isActive = true;
+    whereCondition.status = EventStatus.APPROVED;
+    whereCondition.isDeleted = false;
 
     const events = await prisma.event.findMany({
         where: whereCondition,
@@ -178,6 +181,44 @@ const updateEvent = async (eventId: string, userId: string, role: string, payloa
     return result;
 };
 
+const updateStatus = async (eventId: string, newStatus: EventStatus) => {
+    const isExistEvent = await prisma.event.findUnique({
+        where: { id: eventId },
+    })
+
+    if (!isExistEvent) {
+        throw new AppError(status.NOT_FOUND, "Event not found");
+    }
+
+    const result = await prisma.event.update({
+        where: { id: eventId },
+        data: {
+            status: newStatus,
+        }
+    })
+
+    return result;
+}
+const updateActiveStatus = async (eventId: string) => {
+    const isExistEvent = await prisma.event.findUnique({
+        where: { id: eventId },
+    })
+
+    if (!isExistEvent) {
+        throw new AppError(status.NOT_FOUND, "Event not found");
+    }
+
+    const result = await prisma.event.update({
+        where: { id: eventId },
+        data: {
+            isActive: !isExistEvent.isActive,
+        }
+    })
+
+    return result;
+}
+
+
 const deleteEvent = async (eventId: string, userId: string, role: string) => {
     const event = await prisma.event.findUnique({
         where: { id: eventId },
@@ -193,8 +234,12 @@ const deleteEvent = async (eventId: string, userId: string, role: string) => {
     }
 
     // Since Event doesn't have soft-delete right now in schema, hard delete
-    await prisma.event.delete({
-        where: { id: eventId }
+    await prisma.event.update({
+        where: { id: eventId },
+        data: {
+            isDeleted: true,
+            deletedAt: new Date(),
+        }
     });
 
     return null;
@@ -205,5 +250,7 @@ export const eventService = {
     getAllEvents,
     getEventById,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    updateStatus,
+    updateActiveStatus
 };

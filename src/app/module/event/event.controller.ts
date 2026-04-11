@@ -8,7 +8,7 @@ import { EventStatus } from "../../../generated/prisma/enums";
 const createEvent = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const files = req.files as | { [fieldname: string]: Express.Multer.File[] } | undefined;
-    
+
     // Note: the multipart/form-data payload will be available in req.body
     const result = await eventService.createEvent(userId, req.body, files);
 
@@ -25,7 +25,7 @@ const getAllEvents = catchAsync(async (req: Request, res: Response) => {
         searchTerm: req.query.searchTerm as string,
         status: req.query.status as EventStatus,
     };
-    
+
     const options = {
         page: Number(req.query.page),
         limit: Number(req.query.limit),
@@ -71,11 +71,36 @@ const updateEvent = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const updateStatus = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id as string;
+    const newStatus = req.body.status as EventStatus;
+    const result = await eventService.updateStatus(id, newStatus);
+
+    sendResponse(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: 'Event status updated successfully',
+        data: result
+    });
+});
+
+const updateActiveStatus = catchAsync(async (req: Request, res: Response) => {
+    const eventId = req.params.id as string;
+    const result = await eventService.updateActiveStatus(eventId);
+
+    sendResponse(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: 'Event active status updated successfully',
+        data: result
+    });
+});
+
 const deleteEvent = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const userId = req.user!.id;
     const role = req.user!.role as string;
-    
+
     await eventService.deleteEvent(id, userId, role);
 
     sendResponse(res, {
@@ -91,5 +116,7 @@ export const eventController = {
     getAllEvents,
     getEventById,
     updateEvent,
+    updateStatus,
+    updateActiveStatus,
     deleteEvent
 };
