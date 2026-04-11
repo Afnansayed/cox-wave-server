@@ -45,6 +45,18 @@ const updateOwnerProfile = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const updateOwnerApproval = catchAsync(async (req: Request, res: Response) => {
+    const ownerId = req.params.id as string;
+    const result = await ownerService.updateOwnerApproval(ownerId);
+
+    sendResponse(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: 'Owner approval updated successfully',
+        data: result
+    });
+});
+
 const getAllOwners = catchAsync(async (req: Request, res: Response) => {
     const result = await ownerService.getAllOwners();
 
@@ -68,10 +80,12 @@ const deleteOwner = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
 export const ownerController = {
     getOwnerProfile,
     getOwnerProfileById,
     updateOwnerProfile,
     getAllOwners,
-    deleteOwner
+    deleteOwner,
+    updateOwnerApproval
 };

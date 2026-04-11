@@ -17,4 +17,5 @@ export const updateEventValidationSchema = z.object({
     per_person_price: z.number().nonnegative().optional(),
     status: z.nativeEnum(EventStatus).optional(),
     isActive: z.boolean().optional(),
+    imagesToDelete: z.array(z.string()).optional(),
 });

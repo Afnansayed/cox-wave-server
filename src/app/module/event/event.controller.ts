@@ -58,9 +58,10 @@ const getEventById = catchAsync(async (req: Request, res: Response) => {
 const updateEvent = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const userId = req.user!.id;
+    const role = req.user!.role as string;
     const files = req.files as | { [fieldname: string]: Express.Multer.File[] } | undefined;
 
-    const result = await eventService.updateEvent(id, userId, req.body, files);
+    const result = await eventService.updateEvent(id, userId, role, req.body, files);
 
     sendResponse(res, {
         httpStatusCode: status.OK,
@@ -73,8 +74,9 @@ const updateEvent = catchAsync(async (req: Request, res: Response) => {
 const deleteEvent = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const userId = req.user!.id;
+    const role = req.user!.role as string;
     
-    await eventService.deleteEvent(id, userId);
+    await eventService.deleteEvent(id, userId, role);
 
     sendResponse(res, {
         httpStatusCode: status.OK,

@@ -16,6 +16,7 @@ export interface IUpdateEvent {
     per_person_price?: number;
     status?: EventStatus;
     isActive?: boolean;
+    imagesToDelete?: string[];
 }
 
 export interface IEventFilters {

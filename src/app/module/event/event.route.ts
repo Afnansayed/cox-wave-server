@@ -32,7 +32,7 @@ router.get(
 // Update an event (Owner Only)
 router.patch(
     '/:id',
-    checkAuth(Role.OWNER),
+    checkAuth(Role.OWNER, Role.ADMIN),
     multerUpload.fields([{ name: 'images', maxCount: 5 }]),
     validateRequest(updateEventValidationSchema),
     eventController.updateEvent
@@ -41,7 +41,7 @@ router.patch(
 // Delete an event (Owner Only)
 router.delete(
     '/:id',
-    checkAuth(Role.OWNER),
+    checkAuth(Role.OWNER, Role.ADMIN),
     eventController.deleteEvent
 );
 

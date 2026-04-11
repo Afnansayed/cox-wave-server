@@ -77,6 +77,23 @@ const getAllOwners = async () => {
     return owners;
 };
 
+const updateOwnerApproval = async (ownerId: string) => {
+    const owner = await prisma.owner.findUnique({
+        where: { id: ownerId },
+    });
+
+    if (!owner) {
+        throw new AppError(status.NOT_FOUND, "Owner not found!");
+    }
+
+    const updatedOwner = await prisma.owner.update({
+        where: { id: ownerId },
+        data: { isApproved: true },
+    });
+
+    return updatedOwner;
+};
+
 const deleteOwner = async (ownerId: string) => {
     const existOwner = await prisma.owner.findUnique({
         where: { id: ownerId },
@@ -130,5 +147,6 @@ export const ownerService = {
     getOwnerProfileById,
     updateOwnerProfile,
     getAllOwners,
+    updateOwnerApproval,
     deleteOwner
 };

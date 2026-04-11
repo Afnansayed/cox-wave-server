@@ -41,6 +41,12 @@ router.get(
     ownerController.getAllOwners
 );
 
+router.patch(
+    '/approval/:id',
+    checkAuth(Role.ADMIN),
+    ownerController.updateOwnerApproval
+);
+
 // Delete an owner (soft delete, Admin only)
 router.delete(
     '/:id',
