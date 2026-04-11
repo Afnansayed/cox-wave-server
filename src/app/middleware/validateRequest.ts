@@ -11,11 +11,12 @@ export const validateRequest = (zodSchema: z.ZodObject) => {
         }
 
         const parseResult = zodSchema.safeParse(req.body);
+
         if (!parseResult.success) {
             return next(parseResult.error);
         }
 
-        req.body = parseResult.data; // Update req.body with the parsed data
+        req.body = parseResult.data;
 
         next();
 
