@@ -5,7 +5,7 @@ import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
 import { ICreateEvent, IEventFilters, IUpdateEvent } from "./event.interface";
 import { Prisma } from "../../../generated/prisma/client";
-import { IPaginationOptions } from "../../interfaces/pagination";
+import { IPaginationOptions } from "../../interfaces/pagination.interface";
 import { calculatePagination } from "../../utils/calculatePagination";
 import { deleteFileFromCloudinary } from "../../config/cloudinary.config";
 

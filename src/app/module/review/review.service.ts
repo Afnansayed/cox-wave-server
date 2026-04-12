@@ -2,7 +2,7 @@ import status from "http-status";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { ICreateReview, IReviewFilters, IUpdateReview } from "./review.interface";
-import { IPaginationOptions } from "../../interfaces/pagination";
+import { IPaginationOptions } from "../../interfaces/pagination.interface";
 import { calculatePagination } from "../../utils/calculatePagination";
 import { Prisma } from "../../../generated/prisma/client";
 import { ReviewStatus, Role } from "../../../generated/prisma/enums";
