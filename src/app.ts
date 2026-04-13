@@ -1,11 +1,17 @@
-import express,{ Application, Request, Response } from "express";
+import express, { Application, Request, Response } from "express";
 import { indexRoutes } from "./routes";
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 import { notFoundHandler } from "./app/middleware/notFoundHandler";
 import cookieParser from "cookie-parser";
+import { PaymentController } from "./app/module/payment/payment.controller";
+import * as cron from "cron";
+import { bookingService } from "./app/module/booking/booking.service";
 
-const app:Application = express()
+const app: Application = express()
 
+
+// stripe webhook
+app.post("/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent);
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -19,6 +25,19 @@ app.use("/api/v1", indexRoutes);
 app.get('/', async (req: Request, res: Response) => {
   res.status(200).json("Welcome to the CoxWave API!");
 });
+
+
+//corn 
+new cron.CronJob("*/20 * * * *", async () => {
+  try {
+    console.log("Running cron job to cancel unpaid bookings...");
+    await bookingService.cancelUnpaidBookings();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Error occurred while canceling unpaid bookings:", error.message);
+  }
+}).start();
+
 
 // Global error handler
 app.use(globalErrorHandler);

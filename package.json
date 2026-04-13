@@ -12,6 +12,7 @@
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "seed:admin": "tsx src/app/utils/seedAdmin.ts",
+    "webhook:stripe": "stripe listen --forward-to localhost:5000/webhook",
     "pull": "prisma db pull",
     "push": "prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,6 +29,7 @@
     "cloudinary": "^2.9.0",
     "cookie-parser": "^1.4.7",
     "cox-wave-server": "link:",
+    "cron": "^4.4.0",
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
@@ -37,6 +39,8 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^8.0.5",
     "pg": "^8.19.0",
+    "stripe": "^22.0.1",
+    "uuid": "^13.0.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

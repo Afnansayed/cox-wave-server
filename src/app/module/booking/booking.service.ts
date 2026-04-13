@@ -5,7 +5,10 @@ import { ICreateBooking, IBookingFilters } from "./booking.interface";
 import { IPaginationOptions } from "../../interfaces/pagination.interface";
 import { calculatePagination } from "../../utils/calculatePagination";
 import { Prisma } from "../../../generated/prisma/client";
-import { BookingStatus, Role } from "../../../generated/prisma/enums";
+import { BookingStatus, PaymentStatus, Role } from "../../../generated/prisma/enums";
+import { stripe } from "../../config/stripe.config";
+import { envVars } from "../../config/env";
+import { v7 as uuidv7 } from 'uuid';
 
 const createBooking = async (userId: string, payload: ICreateBooking) => {
     const customer = await prisma.customer.findUnique({
@@ -65,13 +68,193 @@ const createBooking = async (userId: string, payload: ICreateBooking) => {
          * booking.paymentUrl = paymentSession.url;
          */
 
-        return booking;
+        const transactionId = String(uuidv7());
+
+        const paymentData = await tx.payment.create({
+            data: {
+                booking_id: booking.id,
+                amount: totalAmount,
+                transaction_id: transactionId
+            }
+        });
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: [
+                {
+                    price_data: {
+                        currency: "bdt",
+                        product_data: {
+                            name: `Booking for ${event.title}`,
+                        },
+                        unit_amount: totalAmount * 100,
+                    },
+                    quantity: 1,
+                }
+            ],
+            metadata: {
+                bookingId: booking.id,
+                paymentId: paymentData.id,
+            },
+
+            success_url: `${envVars.FRONTEND_URL}/payment/payment-success?bookingId=${booking.id}&paymentId=${paymentData.id}`,
+
+            // cancel_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-failed`,
+            cancel_url: `${envVars.FRONTEND_URL}/payment/payment-failed?bookingId=${booking.id}&paymentId=${paymentData.id}`,
+        })
+
+        return {
+            booking,
+            paymentData,
+            paymentUrl: session.url,
+        };
+    });
+
+    return {
+        booking: result.booking,
+        payment: result.paymentData,
+        paymentUrl: result.paymentUrl,
+    };
+};
+
+const bookingWithPayLater = async (userId: string, payload: ICreateBooking) => {
+    const customer = await prisma.customer.findUnique({
+        where: { user_id: userId }
+    });
+
+    if (!customer) {
+        throw new AppError(status.NOT_FOUND, "Customer profile not found. Please complete profile setup.");
+    }
+
+    const event = await prisma.event.findUnique({
+        where: { id: payload.event_id }
+    });
+
+    if (!event) {
+        throw new AppError(status.NOT_FOUND, "Event not found");
+    }
+
+    if (!event.isActive || event.status !== 'APPROVED') {
+        throw new AppError(status.BAD_REQUEST, "Event is not currently available for booking");
+    }
+
+    if (event.remaining_seats < payload.seats) {
+        throw new AppError(status.BAD_REQUEST, `Unsufficient seats. Only ${event.remaining_seats} seats are available.`);
+    }
+
+    const totalAmount = event.per_person_price * payload.seats;
+
+    const result = await prisma.$transaction(async (tx) => {
+        // 1. Create the booking record
+        const booking = await tx.booking.create({
+            data: {
+                event_id: event.id,
+                customer_id: customer.id,
+                seats: payload.seats,
+                total_amount: totalAmount,
+            }
+        });
+
+        // 2. Decrement the remaining seats atomically
+        await tx.event.update({
+            where: { id: event.id },
+            data: {
+                remaining_seats: event.remaining_seats - payload.seats
+            }
+        });
+
+
+        const transactionId = String(uuidv7());
+
+        const paymentData = await tx.payment.create({
+            data: {
+                booking_id: booking.id,
+                amount: totalAmount,
+                transaction_id: transactionId
+            }
+        });
+        return {
+            booking,
+            payment: paymentData
+        };
     });
 
     return result;
 };
 
-const getAllBookings = async (filters: IBookingFilters, options: IPaginationOptions) => {
+const initiatePayment = async (bookingId: string, userId: string) => {
+    const customer = await prisma.customer.findUniqueOrThrow({
+        where: {
+            user_id: userId,
+        }
+    });
+
+    const bookingData = await prisma.booking.findUniqueOrThrow({
+        where: {
+            id: bookingId,
+            customer_id: customer.id,
+        },
+        include: {
+            event: true,
+            payment: true,
+        }
+    });
+
+    if (!bookingData) {
+        throw new AppError(status.NOT_FOUND, "Booking not found");
+    }
+
+    if (!bookingData.payment) {
+        throw new AppError(status.NOT_FOUND, "Payment data not found for this booking");
+    }
+
+    if (bookingData.payment?.status === PaymentStatus.PAID) {
+        throw new AppError(status.BAD_REQUEST, "Payment already completed for this booking");
+    };
+
+    if (bookingData.status === BookingStatus.CANCELLED) {
+        throw new AppError(status.BAD_REQUEST, "Booking is canceled");
+    }
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: 'payment',
+        line_items: [
+            {
+                price_data: {
+                    currency: "bdt",
+                    product_data: {
+                        name: `Booking for ${bookingData.event.title}`,
+                    },
+                    unit_amount: bookingData.total_amount * 100,
+                },
+                quantity: 1,
+            }
+        ],
+        metadata: {
+            bookingId: bookingData.id,
+            paymentId: bookingData.payment.id,
+        },
+
+        success_url: `${envVars.FRONTEND_URL}/payment/payment-success?booking_id=${bookingData.id}&payment_id=${bookingData.payment.id}`,
+
+        // cancel_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-failed`,
+        cancel_url: `${envVars.FRONTEND_URL}/payment/payment-failed?booking_id=${bookingData.id}&payment_id=${bookingData.payment.id}`,
+    })
+
+    return {
+        paymentUrl: session.url,
+    }
+}
+
+
+const getBookings = async (
+    userId: string,
+    role: Role,
+    filters: IBookingFilters,
+    options: IPaginationOptions
+) => {
     const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
 
     const andConditions: Prisma.BookingWhereInput[] = [];
@@ -82,6 +265,24 @@ const getAllBookings = async (filters: IBookingFilters, options: IPaginationOpti
 
     if (filters.payment_status) {
         andConditions.push({ payment_status: filters.payment_status });
+    }
+
+    if (role === Role.CUSTOMER) {
+        andConditions.push({
+            customer: {
+                user_id: userId
+            }
+        });
+    } else if (role === Role.OWNER) {
+        andConditions.push({
+            event: {
+                owner: {
+                    user_id: userId
+                }
+            }
+        });
+    } else if (role !== Role.ADMIN) {
+        throw new AppError(status.BAD_REQUEST, "Invalid user role");
     }
 
     const whereCondition: Prisma.BookingWhereInput =
@@ -109,29 +310,6 @@ const getAllBookings = async (filters: IBookingFilters, options: IPaginationOpti
     };
 };
 
-const getCustomerBookings = async (userId: string, options: IPaginationOptions) => {
-    const customer = await prisma.customer.findUnique({ where: { user_id: userId } });
-
-    if (!customer) throw new AppError(status.NOT_FOUND, "Customer not found");
-
-    const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
-
-    const bookings = await prisma.booking.findMany({
-        where: { customer_id: customer.id },
-        include: { event: true, payment: true },
-        skip,
-        take: limit,
-        orderBy: { [sortBy]: sortOrder }
-    });
-
-    const total = await prisma.booking.count({ where: { customer_id: customer.id } });
-
-    return {
-        meta: { page, limit, total },
-        data: bookings
-    };
-};
-
 const getBookingById = async (id: string, userId: string, role: string) => {
     const booking = await prisma.booking.findUnique({
         where: { id },
@@ -142,10 +320,6 @@ const getBookingById = async (id: string, userId: string, role: string) => {
         throw new AppError(status.NOT_FOUND, "Booking not found");
     }
 
-    // Security Verification: 
-    // - Customers can only view their own bookings.
-    // - Owners can only view bookings for events they own.
-    // - Admins can view all.
     if (role === Role.CUSTOMER && booking.customer.user_id !== userId) {
         throw new AppError(status.FORBIDDEN, "You do not have access to this booking");
     }
@@ -157,22 +331,65 @@ const getBookingById = async (id: string, userId: string, role: string) => {
     return booking;
 };
 
-const updateBookingStatus = async (id: string, bookingStatus: BookingStatus) => {
+const updateBookingStatus = async (
+    id: string,
+    bookingStatus: BookingStatus,
+    userId: string,
+    role: Role
+) => {
     const booking = await prisma.booking.findUnique({
-        where: { id }
+        where: { id },
+        include: { event: { include: { owner: true } } }
     });
 
     if (!booking) {
         throw new AppError(status.NOT_FOUND, "Booking not found");
     }
 
+    if(booking.status === BookingStatus.CANCELLED) {
+        throw new AppError(status.BAD_REQUEST, "Booking is cancelled and cannot be updated"); 
+    }
+    if(booking.status === BookingStatus.COMPLETED) {
+        throw new AppError(status.BAD_REQUEST, "Booking is completed and cannot be updated"); 
+    }
+
+    // Role-based access control and validation
+    if (role === Role.CUSTOMER) {
+        // Customer can only update their own bookings and only to CANCELLED status
+        const customer = await prisma.customer.findUnique({
+            where: { user_id: userId }
+        });
+
+        if (!customer || booking.customer_id !== customer.id) {
+            throw new AppError(status.FORBIDDEN, "You do not have access to this booking");
+        }
+
+        // Customer can only cancel bookings
+        if (bookingStatus !== BookingStatus.CANCELLED) {
+            throw new AppError(status.FORBIDDEN, "Customer can only cancel bookings");
+        }
+
+        if (booking.status !== BookingStatus.PENDING && booking.status !== BookingStatus.CONFIRMED) {
+            throw new AppError(
+                status.BAD_REQUEST,
+                `Cannot cancel booking with status ${booking.status}. Only PENDING or CONFIRMED bookings can be cancelled.`
+            );
+        }
+    } else if (role === Role.OWNER) {
+        // Owner can update any status for bookings of their own events
+        if (booking.event.owner.user_id !== userId) {
+            throw new AppError(status.FORBIDDEN, "You do not have access to this booking");
+        }
+    } else if (role !== Role.ADMIN) {
+        throw new AppError(status.BAD_REQUEST, "Invalid user role");
+    }
     const updatedBooking = await prisma.$transaction(async (tx) => {
         const result = await tx.booking.update({
             where: { id },
             data: { status: bookingStatus }
         });
 
-        // If the booking gets CANCELLED, we must mathematically refund the event seats. 
+        // If the booking gets CANCELLED, we must mathematically refund the event seats.
         if (bookingStatus === BookingStatus.CANCELLED && booking.status !== BookingStatus.CANCELLED) {
             await tx.event.update({
                 where: { id: booking.event_id },
@@ -186,6 +403,16 @@ const updateBookingStatus = async (id: string, bookingStatus: BookingStatus) => 
              * If booking.payment_status was PAID, initialize Stripe/SSLCommerz Refund API here.
              * Then update Payment record status to REFUNDED.
              */
+        }
+
+        // If the booking gets COMPLETED, we can release the held seats as well since the event has already occurred.
+        if (bookingStatus === BookingStatus.COMPLETED && booking.status !== BookingStatus.COMPLETED) {
+            await tx.event.update({
+                where: { id: booking.event_id },
+                data: {
+                    remaining_seats: { increment: booking.seats }
+                }
+            });
         }
 
         return result;
@@ -217,22 +444,68 @@ const deleteBooking = async (id: string) => {
     return null;
 };
 
-/*
- * TODO: [PAYMENT_INTEGRATION] Webhook Listeners
- * 
- * export const handlePaymentSuccessWebhook = async (reqBody: any) => {
- *     // 1. Validate signature
- *     // 2. Extract transaction_id and booking_id from metadata
- *     // 3. Mark Payment record as PAID
- *     // 4. Mark Booking record as CONFIRMED, payment_status as PAID
- * };
- */
+
+const cancelUnpaidBookings = async () => {
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+
+    const unpaidBookings = await prisma.booking.findMany({
+        where: {
+            createdAt: {
+                lte: thirtyMinutesAgo,
+            },
+            payment_status: PaymentStatus.UNPAID,
+            status: {
+                not: BookingStatus.CANCELLED,
+            },
+        },
+    });
+
+    const bookingToCancel = unpaidBookings.map(booking => booking.id);
+    const eventIds = unpaidBookings.map(booking => booking.event_id);
+
+    await prisma.$transaction(async (tx) => {
+
+        await tx.booking.updateMany({
+            where: {
+                id: {
+                    in: bookingToCancel,
+                },
+            },
+            data: {
+                status: BookingStatus.CANCELLED,
+            },
+        });
+
+        await tx.payment.deleteMany({
+            where: {
+                booking_id: {
+                    in: bookingToCancel,
+                },
+            },
+        });
+
+        await tx.event.updateMany({
+            where: {
+                id: {
+                    in: eventIds,
+                },
+            },
+            data: {
+                remaining_seats: {
+                    increment: unpaidBookings.reduce((acc, booking) => acc + booking.seats, 0)
+                }
+            }
+        });
+    });
+};
 
 export const bookingService = {
-    createBooking,
-    getAllBookings,
-    getCustomerBookings,
-    getBookingById,
-    updateBookingStatus,
-    deleteBooking
-};
+        createBooking,
+        bookingWithPayLater,
+        initiatePayment,
+    getBookings,
+        getBookingById,
+        updateBookingStatus,
+        cancelUnpaidBookings,
+        deleteBooking
+    };

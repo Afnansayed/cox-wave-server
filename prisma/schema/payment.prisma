@@ -1,24 +1,24 @@
 model Payment {
-  id                    String         @id @default(uuid())
+  id String @id @default(uuid())
 
-  booking_id            String         @unique  
-  amount                Float
+  booking_id String @unique
+  amount     Float
 
-  transaction_id        String?        @unique
+  transaction_id  String  @unique @db.Uuid()
+  stripe_event_id String? @unique
 
-  status                PaymentStatus  @default(UNPAID)
+  status PaymentStatus @default(UNPAID)
 
-  payment_gateway_data  Json?
+  payment_gateway_data Json?
 
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relation
-  booking               Booking        @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  booking Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
 
   // Indexes
   @@index([status], name: "payment_status_index")
   @@index([createdAt], name: "payment_createdAt_index")
-
   @@map("payment")
 }

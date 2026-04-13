@@ -3,7 +3,7 @@ import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { bookingService } from "./booking.service";
-import { BookingStatus, PaymentStatus } from "../../../generated/prisma/enums";
+import { BookingStatus, PaymentStatus, Role } from "../../../generated/prisma/enums";
 
 const createBooking = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user!.id;
@@ -17,12 +17,42 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getAllBookings = catchAsync(async (req: Request, res: Response) => {
+const bookingWithPayLater = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const result = await bookingService.bookingWithPayLater(userId, req.body);
+
+    sendResponse(res, {
+        httpStatusCode: status.CREATED,
+        success: true,
+        message: 'Booking initialized successfully',
+        data: result
+    });
+});
+
+const initiatePayment = catchAsync(async (req: Request, res: Response) => {
+
+    const userId = req.user!.id;
+    const bookingId = req.params.id as string;
+    const result = await bookingService.initiatePayment(bookingId, userId);
+
+    sendResponse(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: 'Payment inisiated successfully',
+        data: result
+    });
+});
+
+
+const getBookings = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const role = req.user!.role as Role;
+
     const filters = {
         status: req.query.status as BookingStatus,
         payment_status: req.query.payment_status as PaymentStatus
     };
-    
+
     const options = {
         page: Number(req.query.page),
         limit: Number(req.query.limit),
@@ -30,32 +60,12 @@ const getAllBookings = catchAsync(async (req: Request, res: Response) => {
         sortOrder: req.query.sortOrder as 'asc' | 'desc'
     };
 
-    const result = await bookingService.getAllBookings(filters, options);
+    const result = await bookingService.getBookings(userId, role, filters, options);
 
     sendResponse(res, {
         httpStatusCode: status.OK,
         success: true,
         message: 'Bookings retrieved successfully',
-        data: result
-    });
-});
-
-const getMyBookings = catchAsync(async (req: Request, res: Response) => {
-    const userId = req.user!.id;
-    
-    const options = {
-        page: Number(req.query.page),
-        limit: Number(req.query.limit),
-        sortBy: req.query.sortBy as string,
-        sortOrder: req.query.sortOrder as 'asc' | 'desc'
-    };
-
-    const result = await bookingService.getCustomerBookings(userId, options);
-
-    sendResponse(res, {
-        httpStatusCode: status.OK,
-        success: true,
-        message: 'Your bookings retrieved successfully',
         data: result
     });
 });
@@ -78,8 +88,10 @@ const getBookingById = catchAsync(async (req: Request, res: Response) => {
 const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const bookingStatus = req.body.status as BookingStatus;
-    
-    const result = await bookingService.updateBookingStatus(id, bookingStatus);
+    const userId = req.user!.id;
+    const role = req.user!.role as Role;
+
+    const result = await bookingService.updateBookingStatus(id, bookingStatus, userId, role);
 
     sendResponse(res, {
         httpStatusCode: status.OK,
@@ -89,9 +101,10 @@ const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
 const deleteBooking = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id as string;
-    
+
     await bookingService.deleteBooking(id);
 
     sendResponse(res, {
@@ -104,8 +117,9 @@ const deleteBooking = catchAsync(async (req: Request, res: Response) => {
 
 export const bookingController = {
     createBooking,
-    getAllBookings,
-    getMyBookings,
+    bookingWithPayLater,
+    initiatePayment,
+    getBookings,
     getBookingById,
     updateBookingStatus,
     deleteBooking

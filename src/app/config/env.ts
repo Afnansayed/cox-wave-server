@@ -6,6 +6,7 @@ interface EnvConfig {
     NODE_ENV: string;
     PORT: string;
     DATABASE_URL: string;
+    FRONTEND_URL: string;
     BETTER_AUTH_SECRET: string;
     BETTER_AUTH_URL: string;
     ACCESS_TOKEN_SECRET: string;
@@ -25,12 +26,15 @@ interface EnvConfig {
         ADMIN_PASSWORD: string;
         ADMIN_NAME: string;
     }
+    STRIPE_SECRET_KEY: string;
+    STRIPE_WEBHOOK_SECRET: string;
 }
 
 const loadEnvConfig = (): EnvConfig => {
     const requiredEnvVars = [
         "NODE_ENV",
         "PORT",
+        "FRONTEND_URL",
         "DATABASE_URL",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
@@ -48,7 +52,9 @@ const loadEnvConfig = (): EnvConfig => {
         "CLOUDINARY_API_SECRET",
         "ADMIN_EMAIL",
         "ADMIN_PASSWORD",
-        "ADMIN_NAME"
+        "ADMIN_NAME",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET"
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -61,6 +67,7 @@ const loadEnvConfig = (): EnvConfig => {
     return {
         NODE_ENV: process.env.NODE_ENV as string,
         PORT: process.env.PORT as string,
+        FRONTEND_URL: process.env.FRONTEND_URL as string,
         DATABASE_URL: process.env.DATABASE_URL as string,
         BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
         BETTER_AUTH_URL: process.env.BETTER_AUTH_URL as string,
@@ -80,7 +87,9 @@ const loadEnvConfig = (): EnvConfig => {
             ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
             ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
             ADMIN_NAME: process.env.ADMIN_NAME as string
-        }
+        },
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string
 
     }
 }

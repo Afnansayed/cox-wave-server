@@ -15,18 +15,17 @@ router.post(
     bookingController.createBooking
 );
 
-// Get my logged in bookings (Customer Only)
-router.get(
-    '/my-bookings',
-    checkAuth(Role.CUSTOMER),
-    bookingController.getMyBookings
-);
+// booking with pay later (Customer Only)
+router.post("/pay-later", checkAuth(Role.CUSTOMER), bookingController.bookingWithPayLater);
 
-// Get all bookings cluster (Admin Only)
+// initiate payment for unpaid booking (Customer Only)
+router.post("/initiate-payment/:id", checkAuth(Role.CUSTOMER), bookingController.initiatePayment);
+
+// Get bookings by role (Customer: own bookings, Owner: bookings of own events, Admin: all bookings)
 router.get(
     '/',
-    checkAuth(Role.ADMIN),
-    bookingController.getAllBookings
+    checkAuth(Role.ADMIN, Role.OWNER, Role.CUSTOMER),
+    bookingController.getBookings
 );
 
 // Get a single booking by ID (Accessible strictly by Admin, Event Owner, and Booking Customer via Service guard)
@@ -36,10 +35,10 @@ router.get(
     bookingController.getBookingById
 );
 
-// Update booking status directly (Admin Only)
+// Update booking status (Customer: only CANCELLED, Owner: any status for own events, Admin: any status)
 router.patch(
     '/:id/status',
-    checkAuth(Role.ADMIN),
+    checkAuth(Role.ADMIN, Role.OWNER, Role.CUSTOMER),
     validateRequest(BookingValidation.updateBookingStatusValidationSchema),
     bookingController.updateBookingStatus
 );
@@ -50,5 +49,6 @@ router.delete(
     checkAuth(Role.ADMIN),
     bookingController.deleteBooking
 );
+
 
 export const bookingRoutes = router;
