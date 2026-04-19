@@ -103,7 +103,18 @@ const getEventById = async (id: string) => {
         where: { id },
         include: {
             owner: true,
-            // later you could include bookings or reviews here
+            reviews: {
+                include: {
+                    customer: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            profile_picture: true
+                        }
+                    }
+                }
+            }
         }
     });
 
