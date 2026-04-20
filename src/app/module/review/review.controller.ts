@@ -30,7 +30,7 @@ const getAllReviews = catchAsync(async (req: Request, res: Response) => {
         sortOrder: req.query.sortOrder as 'asc' | 'desc'
     };
 
-    const result = await reviewService.getAllReviews(filters, options);
+    const result = await reviewService.getAllReviews(filters, options, req.user!.role);
 
     sendResponse(res, {
         httpStatusCode: status.OK,

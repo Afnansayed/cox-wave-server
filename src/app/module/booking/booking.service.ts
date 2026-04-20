@@ -383,6 +383,7 @@ const updateBookingStatus = async (
     } else if (role !== Role.ADMIN) {
         throw new AppError(status.BAD_REQUEST, "Invalid user role");
     }
+    
     const updatedBooking = await prisma.$transaction(async (tx) => {
         const result = await tx.booking.update({
             where: { id },

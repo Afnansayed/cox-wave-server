@@ -18,6 +18,7 @@ router.post(
 // Get all reviews
 router.get(
     '/',
+    checkAuth(Role.ADMIN, Role.CUSTOMER , Role.OWNER),
     reviewController.getAllReviews
 );
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Stripe from "stripe";
-import { PaymentStatus } from "../../../generated/prisma/enums";
+import { PaymentStatus} from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 
@@ -40,7 +40,8 @@ const handlerStripeWebhookEvent = async (event: Stripe.Event) => {
                 console.error(`Booking with id ${bookingId} not found`);
                 return { message: `Booking with id ${bookingId} not found` }
             }
-
+            
+            console.log(session.payment_status, "here");
             await prisma.$transaction(async (tx) => {
                 await tx.booking.update({
                     where: {

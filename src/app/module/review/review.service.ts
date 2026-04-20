@@ -51,7 +51,7 @@ const createReview = async (userId: string, payload: ICreateReview) => {
     return review;
 };
 
-const getAllReviews = async (filters: IReviewFilters, options: IPaginationOptions) => {
+const getAllReviews = async (filters: IReviewFilters, options: IPaginationOptions , role: Role) => {
     const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
 
     const andConditions: Prisma.ReviewWhereInput[] = [];
@@ -61,6 +61,7 @@ const getAllReviews = async (filters: IReviewFilters, options: IPaginationOption
             comment: { contains: filters.searchTerm, mode: 'insensitive' }
         });
     }
+    // console.log({role})
 
     if (filters.status) {
         andConditions.push({ status: filters.status });
@@ -68,8 +69,10 @@ const getAllReviews = async (filters: IReviewFilters, options: IPaginationOption
 
     const whereCondition: Prisma.ReviewWhereInput =
         andConditions.length > 0 ? { AND: andConditions } : {};
-
-    whereCondition.status = ReviewStatus.APPROVED
+    
+    if (role !== Role.ADMIN){
+        whereCondition.status = ReviewStatus.APPROVED
+    }
 
     const reviews = await prisma.review.findMany({
         where: whereCondition,
