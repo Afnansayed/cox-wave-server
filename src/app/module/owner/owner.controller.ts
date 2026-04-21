@@ -32,8 +32,8 @@ const updateOwnerProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = req.user?.id as string;
     const files = req.files as | { [fieldname: string]: Express.Multer.File[] } | undefined;
 
-    console.log({ payload: req.body });
-    console.log({ files });
+    // console.log({ payload: req.body });
+    // console.log({ files });
 
     const result = await ownerService.updateOwnerProfile(userId, req.body, files);
 
