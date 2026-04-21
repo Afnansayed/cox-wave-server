@@ -58,7 +58,17 @@ const updateOwnerApproval = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllOwners = catchAsync(async (req: Request, res: Response) => {
-    const result = await ownerService.getAllOwners();
+       const filters = {
+            searchTerm: req.query.searchTerm as string
+        };
+        
+        const options = {
+            page: Number(req.query.page),
+            limit: Number(req.query.limit),
+            sortBy: req.query.sortBy as string,
+            sortOrder: req.query.sortOrder as 'asc' | 'desc'
+        };
+    const result = await ownerService.getAllOwners(filters, options);
 
     sendResponse(res, {
         httpStatusCode: status.OK,

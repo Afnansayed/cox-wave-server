@@ -1,8 +1,11 @@
 import AppError from "../../errorHelpers/AppError";
-import { IUpdateOwner } from "./owner.interface";
+import { IOwnerFilters, IUpdateOwner } from "./owner.interface";
 import { prisma } from "../../lib/prisma";
 import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
+import { IPaginationOptions } from "../../interfaces/pagination.interface";
+import { calculatePagination } from "../../utils/calculatePagination";
+import { Prisma } from "../../../generated/prisma/browser";
 
 const getOwnerProfile = async (userId: string) => {
     const owner = await prisma.owner.findUnique({
@@ -70,11 +73,40 @@ const updateOwnerProfile = async (userId: string, payload: IUpdateOwner, files?:
     return updatedOwner;
 };
 
-const getAllOwners = async () => {
+const getAllOwners = async (filters: IOwnerFilters, options: IPaginationOptions) => {
+    const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
+
+    const andConditions: Prisma.OwnerWhereInput[] = [];
+
+    if (filters.searchTerm?.trim()) {
+        const searchTerm = filters.searchTerm.trim();
+        andConditions.push({
+            OR: [
+                { name: { contains: searchTerm, mode: 'insensitive' } },
+                { email: { contains: searchTerm, mode: 'insensitive' } },
+            ],
+        });
+    }
+
+    const whereCondition: Prisma.OwnerWhereInput =
+        andConditions.length > 0 ? { AND: andConditions } : {};
+
+    whereCondition.isDeleted = false;
+
     const owners = await prisma.owner.findMany({
-        where: { isDeleted: false }
+        where: whereCondition,
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder
+        }
     });
-    return owners;
+
+    const total = await prisma.owner.count({ where: whereCondition });
+    return {
+        meta: { page, limit, total },
+        data: owners
+    };
 };
 
 const updateOwnerApproval = async (ownerId: string) => {

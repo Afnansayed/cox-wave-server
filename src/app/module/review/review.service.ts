@@ -51,7 +51,7 @@ const createReview = async (userId: string, payload: ICreateReview) => {
     return review;
 };
 
-const getAllReviews = async (filters: IReviewFilters, options: IPaginationOptions , role: Role) => {
+const getAllReviews = async (filters: IReviewFilters, options: IPaginationOptions, role: Role) => {
     const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
 
     const andConditions: Prisma.ReviewWhereInput[] = [];

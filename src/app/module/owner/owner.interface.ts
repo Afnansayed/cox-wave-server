@@ -7,3 +7,8 @@ export interface IUpdateOwner {
   business_address?: string;
   bank_account?: string;
 }
+
+
+export interface IOwnerFilters {
+    searchTerm?: string;
+}
