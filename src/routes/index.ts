@@ -5,6 +5,7 @@ import { UserRoutes } from "../app/module/user/user.route";
 import { eventRoutes } from "../app/module/event/event.route";
 import { reviewRoutes } from "../app/module/review/review.route";
 import { bookingRoutes } from "../app/module/booking/booking.route";
+import { customerRoutes } from "../app/module/customer/customer.route";
 
 
 
@@ -16,5 +17,6 @@ router.use("/owner", ownerRoutes);
 router.use("/event", eventRoutes);
 router.use("/review", reviewRoutes);
 router.use("/booking", bookingRoutes);
+router.use("/customer", customerRoutes);
 
 export const indexRoutes = router;
