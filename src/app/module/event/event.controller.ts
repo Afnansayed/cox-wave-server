@@ -42,6 +42,30 @@ const getAllEvents = catchAsync(async (req: Request, res: Response) => {
         data: result
     });
 });
+const getEventForAuthenticatedUser = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+
+    const filters = {
+        searchTerm: req.query.searchTerm as string,
+        status: req.query.status as EventStatus,
+    };
+
+    const options = {
+        page: Number(req.query.page),
+        limit: Number(req.query.limit),
+        sortBy: req.query.sortBy as string,
+        sortOrder: req.query.sortOrder as 'asc' | 'desc'
+    };
+
+    const result = await eventService.getEventForAuthenticatedUser( filters, options , userId);
+
+    sendResponse(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: 'Authenticated User Events retrieved successfully',
+        data: result
+    });
+});
 
 const getEventById = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id as string;
@@ -118,5 +142,6 @@ export const eventController = {
     updateEvent,
     updateStatus,
     updateActiveStatus,
-    deleteEvent
+    deleteEvent,
+    getEventForAuthenticatedUser
 };

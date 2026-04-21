@@ -17,10 +17,18 @@ router.post(
     eventController.createEvent
 );
 
+
 // Get all events (Public - Everyone can view)
 router.get(
-    '/',
+    '/', 
     eventController.getAllEvents
+);
+
+// Get owner's events (Owner Only)
+router.get(
+    '/auth',
+    checkAuth(Role.OWNER, Role.ADMIN),
+    eventController.getEventForAuthenticatedUser
 );
 
 // Get a single event by ID (Public)

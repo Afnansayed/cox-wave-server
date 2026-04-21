@@ -98,6 +98,72 @@ const getAllEvents = async (filters: IEventFilters, options: IPaginationOptions)
     };
 };
 
+const getEventForAuthenticatedUser = async (filters: IEventFilters, options: IPaginationOptions , userId: string) => {
+    const  isExistUser = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+
+    if (!isExistUser) {
+        throw new AppError(status.NOT_FOUND, "User not found");
+     }
+
+     const {role} = isExistUser;
+
+    const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
+
+    const andConditions: Prisma.EventWhereInput[] = [];
+
+    if (filters.searchTerm) {
+        andConditions.push({
+            OR: [
+                { title: { contains: filters.searchTerm, mode: 'insensitive' } },
+                { location: { contains: filters.searchTerm, mode: 'insensitive' } }
+            ]
+        });
+    }
+
+    if (filters.status) {
+        andConditions.push({
+            status: filters.status
+        });
+    }
+
+    const whereCondition: Prisma.EventWhereInput =
+        andConditions.length > 0 ? { AND: andConditions } : {};
+    
+    if (role !== Role.ADMIN){    
+    whereCondition.isDeleted = false;
+    whereCondition.owner = {
+        user_id: userId
+    };
+  };
+
+    const events = await prisma.event.findMany({
+        where: whereCondition,
+        include: {
+            owner: true
+        },
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder
+        }
+    });
+
+    const total = await prisma.event.count({
+        where: whereCondition
+    });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: events
+    };
+};
+
 const getEventById = async (id: string) => {
     const event = await prisma.event.findUnique({
         where: { id },
@@ -263,5 +329,6 @@ export const eventService = {
     updateEvent,
     deleteEvent,
     updateStatus,
-    updateActiveStatus
+    updateActiveStatus,
+    getEventForAuthenticatedUser
 };
