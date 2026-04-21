@@ -49,6 +49,7 @@ const getBookings = catchAsync(async (req: Request, res: Response) => {
     const role = req.user!.role as Role;
 
     const filters = {
+        searchTerm: req.query.searchTerm as string,
         status: req.query.status as BookingStatus,
         payment_status: req.query.payment_status as PaymentStatus
     };

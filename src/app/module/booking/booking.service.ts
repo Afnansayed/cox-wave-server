@@ -267,6 +267,15 @@ const getBookings = async (
         andConditions.push({ payment_status: filters.payment_status });
     }
 
+    if (filters.searchTerm) {
+        andConditions.push({
+            OR: [
+                { event: { title: { contains: filters.searchTerm, mode: 'insensitive' } } },
+                { id: { contains: filters.searchTerm, mode: 'insensitive' } }
+            ]
+        });
+    }
+
     if (role === Role.CUSTOMER) {
         andConditions.push({
             customer: {
@@ -383,7 +392,7 @@ const updateBookingStatus = async (
     } else if (role !== Role.ADMIN) {
         throw new AppError(status.BAD_REQUEST, "Invalid user role");
     }
-    
+
     const updatedBooking = await prisma.$transaction(async (tx) => {
         const result = await tx.booking.update({
             where: { id },
