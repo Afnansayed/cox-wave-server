@@ -5,7 +5,7 @@ import { Role } from "../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest";
 import { ReviewValidation } from "./review.validation";
 
-const router = Router();
+const router: Router = Router();
 
 // Create new review (Customer Only)
 router.post(
@@ -51,4 +51,4 @@ router.delete(
     reviewController.deleteReview
 );
 
-export const reviewRoutes = router;
+export const reviewRoutes: Router = router;

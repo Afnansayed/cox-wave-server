@@ -5,7 +5,7 @@ import { Role } from "../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest";
 import { BookingValidation } from "./booking.validation";
 
-const router = Router();
+const router: Router = Router();
 
 // Create new booking (Customer Only)
 router.post(
@@ -51,4 +51,4 @@ router.delete(
 );
 
 
-export const bookingRoutes = router;
+export const bookingRoutes: Router = router;

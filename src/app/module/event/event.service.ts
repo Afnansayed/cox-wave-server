@@ -31,8 +31,8 @@ const createEvent = async (userId: string, payload: ICreateEvent, files?: { [fie
     const event = await prisma.event.create({
         data: {
             title: payload.title,
-            description: payload.description,
-            location: payload.location,
+            description: payload.description ?? null,
+            location: payload.location ?? null,
             capacity: capacity,
             remaining_seats: capacity,
             per_person_price: per_person_price,

@@ -10,7 +10,7 @@ import { adminRoutes } from "../app/module/admin/admin.route";
 
 
 
-const router = Router();
+const router: Router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/user", UserRoutes);
@@ -22,4 +22,4 @@ router.use("/customer", customerRoutes);
 router.use("/admin", adminRoutes);
 
 
-export const indexRoutes = router;
+export const indexRoutes: Router = router;

@@ -9,7 +9,7 @@ import { updateAdminValidationSchema } from "./admin.validation";
 
 
 
-const router = Router();
+const router: Router = Router();
 // Get the logged-in owner's profile
 router.get(
     '/profile',
@@ -27,4 +27,4 @@ router.patch(
     AdminController.updateAdminProfile
 );
 
-export const adminRoutes = router;
+export const adminRoutes: Router = router;

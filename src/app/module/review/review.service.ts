@@ -43,7 +43,7 @@ const createReview = async (userId: string, payload: ICreateReview) => {
             event_id: payload.event_id,
             customer_id: customer.id,
             rating: payload.rating,
-            comment: payload.comment,
+            comment: payload.comment ?? null,
             status: ReviewStatus.PENDING
         }
     });

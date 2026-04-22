@@ -6,7 +6,7 @@ import { multerUpload } from "../../config/multer.config";
 import { validateRequest } from "../../middleware/validateRequest";
 import { updateOwnerValidationSchema } from "./owner.validation";
 
-const router = Router();
+const router: Router = Router();
 
 // Get the logged-in owner's profile
 router.get(
@@ -54,4 +54,4 @@ router.delete(
     ownerController.deleteOwner
 );
 
-export const ownerRoutes = router;
+export const ownerRoutes: Router = router;

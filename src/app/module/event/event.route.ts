@@ -6,7 +6,7 @@ import { multerUpload } from "../../config/multer.config";
 import { validateRequest } from "../../middleware/validateRequest";
 import { createEventValidationSchema, updateEventValidationSchema } from "./event.validation";
 
-const router = Router();
+const router: Router = Router();
 
 // Create new event (Owner Only)
 router.post(
@@ -67,4 +67,4 @@ router.delete(
     eventController.deleteEvent
 );
 
-export const eventRoutes = router;
+export const eventRoutes: Router = router;

@@ -5,7 +5,7 @@ import { validateRequest } from "../../middleware/validateRequest";
 import { createOwnerSchema } from "./user.validation";
 
 
-const router = Router();
+const router: Router = Router();
 
 router.post(
 	"/create-owner",
@@ -17,4 +17,4 @@ router.post(
 	UserController.createOwner,
 );
 
-export const UserRoutes = router;
+export const UserRoutes: Router = router;

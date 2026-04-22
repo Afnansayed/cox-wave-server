@@ -5,10 +5,30 @@
     "outDir": "./dist",  
     "moduleResolution": "bundler", 
     "target": "es2023",
+
+    // For nodejs:
+    "lib": ["esnext"],
+    "types": ["node"],
+    
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
     "strict": true,
+    "jsx": "react-jsx",
     "esModuleInterop": true,
+
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
     // "ignoreDeprecations": "6.0"
   },
   "include": ["src" , "prisma.config.ts"],

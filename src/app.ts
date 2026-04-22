@@ -1,11 +1,11 @@
 import express, { Application, Request, Response } from "express";
-import { indexRoutes } from "./routes";
+import { indexRoutes } from "./routes/index.js";
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 import { notFoundHandler } from "./app/middleware/notFoundHandler";
 import cookieParser from "cookie-parser";
 import { PaymentController } from "./app/module/payment/payment.controller";
-import * as cron from "cron";
-import { bookingService } from "./app/module/booking/booking.service";
+// import * as cron from "cron";
+// import { bookingService } from "./app/module/booking/booking.service";
 import cors from "cors";
 import { envVars } from "./app/config/env";
 
@@ -20,7 +20,7 @@ app.use(cors({
     origin: [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL, "http://localhost:3000", "http://localhost:5000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization" , "Cookie"]
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -36,15 +36,15 @@ app.get('/', async (req: Request, res: Response) => {
 
 
 //corn 
-new cron.CronJob("*/20 * * * *", async () => {
-  try {
-    console.log("Running cron job to cancel unpaid bookings...");
-    await bookingService.cancelUnpaidBookings();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error("Error occurred while canceling unpaid bookings:", error.message);
-  }
-}).start();
+// new cron.CronJob("*/20 * * * *", async () => {
+//   try {
+//     console.log("Running cron job to cancel unpaid bookings...");
+//     await bookingService.cancelUnpaidBookings();
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   } catch (error: any) {
+//     console.error("Error occurred while canceling unpaid bookings:", error.message);
+//   }
+// }).start();
 
 
 // Global error handler

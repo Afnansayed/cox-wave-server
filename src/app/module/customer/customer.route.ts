@@ -8,7 +8,7 @@ import { validateRequest } from "../../middleware/validateRequest";
 
 
 
-const router = Router();
+const router: Router = Router();
 // Get the logged-in owner's profile
 router.get(
 	'/profile',
@@ -26,4 +26,4 @@ router.patch(
     CustomerController.updateCustomerProfile
 );
 
-export const customerRoutes = router;
+export const customerRoutes: Router = router;

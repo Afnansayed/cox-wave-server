@@ -6,7 +6,7 @@ import { Role } from "../../../generated/prisma/browser";
 import { checkAuth } from "../../middleware/checkAuth";
 
 
-const router = Router();
+const router: Router = Router();
 
 router.post('/register', validateRequest(createCustomerZodSchema), authController.registerCustomer);
 router.post('/login', authController.loginUser);
@@ -17,4 +17,4 @@ router.post("/verify-email", authController.verifyEmail);
 router.post("/forget-password", authController.forgetPassword);
 router.post("/reset-password", authController.resetPassword);
 
-export const authRoutes = router;
+export const authRoutes: Router = router;
