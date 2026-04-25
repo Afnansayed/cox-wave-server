@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/src/server.js",
-    "build": "prisma generate && prisma migrate deploy && tsc && node scripts/fix-imports.js",
+    "build": "prisma generate && tsc && node scripts/fix-imports.js",
     "dev": "tsx watch src/server.ts",
     "lint": "pnpm eslint ./src/**/*",
     "generate": "prisma generate",
