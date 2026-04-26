@@ -7,6 +7,8 @@ model Event {
     capacity         Int         @default(0)
     remaining_seats  Int         @default(0)
     per_person_price Float
+    average_rating   Float       @default(0)
+    total_reviews    Int         @default(0)
     status           EventStatus @default(PENDING)
     isActive         Boolean     @default(true)
     isDeleted        Boolean     @default(false)

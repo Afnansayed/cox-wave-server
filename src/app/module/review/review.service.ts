@@ -38,14 +38,32 @@ const createReview = async (userId: string, payload: ICreateReview) => {
         throw new AppError(status.BAD_REQUEST, "You have already reviewed this event");
     }
 
-    const review = await prisma.review.create({
-        data: {
-            event_id: payload.event_id,
-            customer_id: customer.id,
-            rating: payload.rating,
-            comment: payload.comment ?? null,
-            status: ReviewStatus.PENDING
-        }
+    const review = await prisma.$transaction(async (tx) => {
+        const createdReview = await tx.review.create({
+            data: {
+                event_id: payload.event_id,
+                customer_id: customer.id,
+                rating: payload.rating,
+                comment: payload.comment ?? null,
+                status: ReviewStatus.PENDING
+            }
+        });
+
+        const reviewStats = await tx.review.aggregate({
+            where: { event_id: payload.event_id },
+            _avg: { rating: true },
+            _count: { id: true }
+        });
+
+        await tx.event.update({
+            where: { id: payload.event_id },
+            data: {
+                average_rating: reviewStats._avg.rating ?? 0,
+                total_reviews: reviewStats._count.id
+            }
+        });
+
+        return createdReview;
     });
 
     return review;

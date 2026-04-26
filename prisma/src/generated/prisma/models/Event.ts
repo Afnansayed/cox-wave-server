@@ -30,12 +30,16 @@ export type EventAvgAggregateOutputType = {
   capacity: number | null
   remaining_seats: number | null
   per_person_price: number | null
+  average_rating: number | null
+  total_reviews: number | null
 }
 
 export type EventSumAggregateOutputType = {
   capacity: number | null
   remaining_seats: number | null
   per_person_price: number | null
+  average_rating: number | null
+  total_reviews: number | null
 }
 
 export type EventMinAggregateOutputType = {
@@ -46,6 +50,8 @@ export type EventMinAggregateOutputType = {
   capacity: number | null
   remaining_seats: number | null
   per_person_price: number | null
+  average_rating: number | null
+  total_reviews: number | null
   status: $Enums.EventStatus | null
   isActive: boolean | null
   isDeleted: boolean | null
@@ -63,6 +69,8 @@ export type EventMaxAggregateOutputType = {
   capacity: number | null
   remaining_seats: number | null
   per_person_price: number | null
+  average_rating: number | null
+  total_reviews: number | null
   status: $Enums.EventStatus | null
   isActive: boolean | null
   isDeleted: boolean | null
@@ -81,6 +89,8 @@ export type EventCountAggregateOutputType = {
   capacity: number
   remaining_seats: number
   per_person_price: number
+  average_rating: number
+  total_reviews: number
   status: number
   isActive: number
   isDeleted: number
@@ -96,12 +106,16 @@ export type EventAvgAggregateInputType = {
   capacity?: true
   remaining_seats?: true
   per_person_price?: true
+  average_rating?: true
+  total_reviews?: true
 }
 
 export type EventSumAggregateInputType = {
   capacity?: true
   remaining_seats?: true
   per_person_price?: true
+  average_rating?: true
+  total_reviews?: true
 }
 
 export type EventMinAggregateInputType = {
@@ -112,6 +126,8 @@ export type EventMinAggregateInputType = {
   capacity?: true
   remaining_seats?: true
   per_person_price?: true
+  average_rating?: true
+  total_reviews?: true
   status?: true
   isActive?: true
   isDeleted?: true
@@ -129,6 +145,8 @@ export type EventMaxAggregateInputType = {
   capacity?: true
   remaining_seats?: true
   per_person_price?: true
+  average_rating?: true
+  total_reviews?: true
   status?: true
   isActive?: true
   isDeleted?: true
@@ -147,6 +165,8 @@ export type EventCountAggregateInputType = {
   capacity?: true
   remaining_seats?: true
   per_person_price?: true
+  average_rating?: true
+  total_reviews?: true
   status?: true
   isActive?: true
   isDeleted?: true
@@ -252,6 +272,8 @@ export type EventGroupByOutputType = {
   capacity: number
   remaining_seats: number
   per_person_price: number
+  average_rating: number
+  total_reviews: number
   status: $Enums.EventStatus
   isActive: boolean
   isDeleted: boolean
@@ -293,6 +315,8 @@ export type EventWhereInput = {
   capacity?: Prisma.IntFilter<"Event"> | number
   remaining_seats?: Prisma.IntFilter<"Event"> | number
   per_person_price?: Prisma.FloatFilter<"Event"> | number
+  average_rating?: Prisma.FloatFilter<"Event"> | number
+  total_reviews?: Prisma.IntFilter<"Event"> | number
   status?: Prisma.EnumEventStatusFilter<"Event"> | $Enums.EventStatus
   isActive?: Prisma.BoolFilter<"Event"> | boolean
   isDeleted?: Prisma.BoolFilter<"Event"> | boolean
@@ -314,6 +338,8 @@ export type EventOrderByWithRelationInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -338,6 +364,8 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   capacity?: Prisma.IntFilter<"Event"> | number
   remaining_seats?: Prisma.IntFilter<"Event"> | number
   per_person_price?: Prisma.FloatFilter<"Event"> | number
+  average_rating?: Prisma.FloatFilter<"Event"> | number
+  total_reviews?: Prisma.IntFilter<"Event"> | number
   status?: Prisma.EnumEventStatusFilter<"Event"> | $Enums.EventStatus
   isActive?: Prisma.BoolFilter<"Event"> | boolean
   isDeleted?: Prisma.BoolFilter<"Event"> | boolean
@@ -359,6 +387,8 @@ export type EventOrderByWithAggregationInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -385,6 +415,8 @@ export type EventScalarWhereWithAggregatesInput = {
   capacity?: Prisma.IntWithAggregatesFilter<"Event"> | number
   remaining_seats?: Prisma.IntWithAggregatesFilter<"Event"> | number
   per_person_price?: Prisma.FloatWithAggregatesFilter<"Event"> | number
+  average_rating?: Prisma.FloatWithAggregatesFilter<"Event"> | number
+  total_reviews?: Prisma.IntWithAggregatesFilter<"Event"> | number
   status?: Prisma.EnumEventStatusWithAggregatesFilter<"Event"> | $Enums.EventStatus
   isActive?: Prisma.BoolWithAggregatesFilter<"Event"> | boolean
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Event"> | boolean
@@ -403,6 +435,8 @@ export type EventCreateInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -423,6 +457,8 @@ export type EventUncheckedCreateInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -443,6 +479,8 @@ export type EventUpdateInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -463,6 +501,8 @@ export type EventUncheckedUpdateInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -483,6 +523,8 @@ export type EventCreateManyInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -501,6 +543,8 @@ export type EventUpdateManyMutationInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -518,6 +562,8 @@ export type EventUncheckedUpdateManyInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -549,6 +595,8 @@ export type EventCountOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -562,6 +610,8 @@ export type EventAvgOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
 }
 
 export type EventMaxOrderByAggregateInput = {
@@ -572,6 +622,8 @@ export type EventMaxOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -589,6 +641,8 @@ export type EventMinOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -602,6 +656,8 @@ export type EventSumOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   remaining_seats?: Prisma.SortOrder
   per_person_price?: Prisma.SortOrder
+  average_rating?: Prisma.SortOrder
+  total_reviews?: Prisma.SortOrder
 }
 
 export type EventListRelationFilter = {
@@ -706,6 +762,8 @@ export type EventCreateWithoutBookingsInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -725,6 +783,8 @@ export type EventUncheckedCreateWithoutBookingsInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -760,6 +820,8 @@ export type EventUpdateWithoutBookingsInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -779,6 +841,8 @@ export type EventUncheckedUpdateWithoutBookingsInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -798,6 +862,8 @@ export type EventCreateWithoutOwnerInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -817,6 +883,8 @@ export type EventUncheckedCreateWithoutOwnerInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -865,6 +933,8 @@ export type EventScalarWhereInput = {
   capacity?: Prisma.IntFilter<"Event"> | number
   remaining_seats?: Prisma.IntFilter<"Event"> | number
   per_person_price?: Prisma.FloatFilter<"Event"> | number
+  average_rating?: Prisma.FloatFilter<"Event"> | number
+  total_reviews?: Prisma.IntFilter<"Event"> | number
   status?: Prisma.EnumEventStatusFilter<"Event"> | $Enums.EventStatus
   isActive?: Prisma.BoolFilter<"Event"> | boolean
   isDeleted?: Prisma.BoolFilter<"Event"> | boolean
@@ -883,6 +953,8 @@ export type EventCreateWithoutReviewsInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -902,6 +974,8 @@ export type EventUncheckedCreateWithoutReviewsInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -937,6 +1011,8 @@ export type EventUpdateWithoutReviewsInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -956,6 +1032,8 @@ export type EventUncheckedUpdateWithoutReviewsInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -975,6 +1053,8 @@ export type EventCreateManyOwnerInput = {
   capacity?: number
   remaining_seats?: number
   per_person_price: number
+  average_rating?: number
+  total_reviews?: number
   status?: $Enums.EventStatus
   isActive?: boolean
   isDeleted?: boolean
@@ -992,6 +1072,8 @@ export type EventUpdateWithoutOwnerInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1011,6 +1093,8 @@ export type EventUncheckedUpdateWithoutOwnerInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1030,6 +1114,8 @@ export type EventUncheckedUpdateManyWithoutOwnerInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   remaining_seats?: Prisma.IntFieldUpdateOperationsInput | number
   per_person_price?: Prisma.FloatFieldUpdateOperationsInput | number
+  average_rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1087,6 +1173,8 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   capacity?: boolean
   remaining_seats?: boolean
   per_person_price?: boolean
+  average_rating?: boolean
+  total_reviews?: boolean
   status?: boolean
   isActive?: boolean
   isDeleted?: boolean
@@ -1109,6 +1197,8 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   capacity?: boolean
   remaining_seats?: boolean
   per_person_price?: boolean
+  average_rating?: boolean
+  total_reviews?: boolean
   status?: boolean
   isActive?: boolean
   isDeleted?: boolean
@@ -1128,6 +1218,8 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   capacity?: boolean
   remaining_seats?: boolean
   per_person_price?: boolean
+  average_rating?: boolean
+  total_reviews?: boolean
   status?: boolean
   isActive?: boolean
   isDeleted?: boolean
@@ -1147,6 +1239,8 @@ export type EventSelectScalar = {
   capacity?: boolean
   remaining_seats?: boolean
   per_person_price?: boolean
+  average_rating?: boolean
+  total_reviews?: boolean
   status?: boolean
   isActive?: boolean
   isDeleted?: boolean
@@ -1156,7 +1250,7 @@ export type EventSelectScalar = {
   owner_id?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "images" | "capacity" | "remaining_seats" | "per_person_price" | "status" | "isActive" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt" | "owner_id", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "images" | "capacity" | "remaining_seats" | "per_person_price" | "average_rating" | "total_reviews" | "status" | "isActive" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt" | "owner_id", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.OwnerDefaultArgs<ExtArgs>
   bookings?: boolean | Prisma.Event$bookingsArgs<ExtArgs>
@@ -1186,6 +1280,8 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     capacity: number
     remaining_seats: number
     per_person_price: number
+    average_rating: number
+    total_reviews: number
     status: $Enums.EventStatus
     isActive: boolean
     isDeleted: boolean
@@ -1627,6 +1723,8 @@ export interface EventFieldRefs {
   readonly capacity: Prisma.FieldRef<"Event", 'Int'>
   readonly remaining_seats: Prisma.FieldRef<"Event", 'Int'>
   readonly per_person_price: Prisma.FieldRef<"Event", 'Float'>
+  readonly average_rating: Prisma.FieldRef<"Event", 'Float'>
+  readonly total_reviews: Prisma.FieldRef<"Event", 'Int'>
   readonly status: Prisma.FieldRef<"Event", 'EventStatus'>
   readonly isActive: Prisma.FieldRef<"Event", 'Boolean'>
   readonly isDeleted: Prisma.FieldRef<"Event", 'Boolean'>

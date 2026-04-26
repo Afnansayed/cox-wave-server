@@ -35,11 +35,21 @@ const createOwner = async (owner: ICreateOwner) => {
     throw new AppError(status.INTERNAL_SERVER_ERROR, "Failed to create user");
   }
 
+  await prisma.user.update({
+    where: {
+      id: newUser.user.id,
+    },
+    data: {
+      emailVerified: true,
+    },
+  });
+
   try {
       const result = await prisma.$transaction(async (tx) => {
         const createdOwner = await tx.owner.create({
           data: {
             user_id: newUser.user.id,
+            isApproved: true,
             ...ownerData
           },
         });

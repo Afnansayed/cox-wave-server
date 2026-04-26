@@ -1388,6 +1388,8 @@ export const EventScalarFieldEnum = {
   capacity: 'capacity',
   remaining_seats: 'remaining_seats',
   per_person_price: 'per_person_price',
+  average_rating: 'average_rating',
+  total_reviews: 'total_reviews',
   status: 'status',
   isActive: 'isActive',
   isDeleted: 'isDeleted',
