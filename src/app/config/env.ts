@@ -28,6 +28,10 @@ interface EnvConfig {
     }
     STRIPE_SECRET_KEY: string;
     STRIPE_WEBHOOK_SECRET: string;
+    PRODUCTION: {
+        SERVER_URL: string;
+        APP_URL: string;
+    }
 }
 
 const loadEnvConfig = (): EnvConfig => {
@@ -54,7 +58,10 @@ const loadEnvConfig = (): EnvConfig => {
         "ADMIN_PASSWORD",
         "ADMIN_NAME",
         "STRIPE_SECRET_KEY",
-        "STRIPE_WEBHOOK_SECRET"
+        "STRIPE_WEBHOOK_SECRET",
+        "PRODUCTION_SERVER_URL",
+        "PRODUCTION_APP_URL"
+
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -89,8 +96,11 @@ const loadEnvConfig = (): EnvConfig => {
             ADMIN_NAME: process.env.ADMIN_NAME as string
         },
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
-        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string
-
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+        PRODUCTION: {
+            SERVER_URL: process.env.PRODUCTION_SERVER_URL as string,
+            APP_URL: process.env.PRODUCTION_APP_URL as string
+        }
     }
 }
 

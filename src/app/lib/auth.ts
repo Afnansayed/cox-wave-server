@@ -7,12 +7,11 @@ import { sendEmail } from "../utils/email";
 import { envVars } from "../config/env";
 
 export const auth = betterAuth({
+    baseURL:envVars.BETTER_AUTH_URL,
+    secret: envVars.BETTER_AUTH_SECRET!,
     database: prismaAdapter(prisma, {
         provider: "postgresql", 
     }),
-
-    baseURL:envVars.FRONTEND_URL,
-    trustedOrigins: [envVars.FRONTEND_URL!],
 
     emailAndPassword: {
         enabled: true,
@@ -59,27 +58,6 @@ export const auth = betterAuth({
         }
     },
 
-    advanced: {
-    cookies: {
-      session_token: {
-        attributes: {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          partitioned: true,
-        },
-      },
-      state: {
-        attributes: {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          partitioned: true,
-        },
-      },
-    },
-  },
-
     plugins: [
         bearer(),
         emailOTP({
@@ -89,7 +67,7 @@ export const auth = betterAuth({
                    const user = await prisma.user.findUnique({ where: { email } });
 
                     if(user && !user.emailVerified){
-                        sendEmail({
+                       await sendEmail({
                             to: email,
                             subject: "Verify Your Email",
                             templateName: "otp",
@@ -100,7 +78,7 @@ export const auth = betterAuth({
                     const user = await prisma.user.findUnique({ where: { email } });
 
                     if(user){
-                        sendEmail({
+                        await sendEmail({
                             to: email,
                             subject: "Password Reset OTP",
                             templateName: "otp",
@@ -123,4 +101,34 @@ export const auth = betterAuth({
             maxAge: 60 * 60 * 60 * 24, // 1 day in seconds
         }
     },
+
+ trustedOrigins: [
+    envVars.BETTER_AUTH_URL || "http://localhost:5000", 
+    envVars.FRONTEND_URL ,
+    envVars.PRODUCTION.SERVER_URL || "https://cox-wave-server.vercel.app",
+    envVars.PRODUCTION.APP_URL || "https://cox-wave-client.vercel.app"
+],
+
+ advanced: {
+        // disableCSRFCheck: true,
+        useSecureCookies : false,
+        cookies:{
+            state:{
+                attributes:{
+                    sameSite: "none",
+                    secure: true,
+                    httpOnly: true,
+                    path: "/",
+                }
+            },
+            sessionToken:{
+                attributes:{
+                    sameSite: "none",
+                    secure: true,
+                    httpOnly: true,
+                    path: "/",
+                }
+            }
+        }
+    }
 });
