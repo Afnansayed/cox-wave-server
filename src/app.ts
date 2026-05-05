@@ -8,6 +8,9 @@ import { PaymentController } from "./app/module/payment/payment.controller";
 // import { bookingService } from "./app/module/booking/booking.service";
 import cors from "cors";
 import { envVars } from "./app/config/env";
+import path from "path";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./app/lib/auth.js";
 
 const app: Application = express()
 
@@ -22,9 +25,14 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization" , "Cookie"]
 }));
+
+app.set("view engine" , "ejs");
+app.set("views", path.resolve(process.cwd(), `src/app/templates`));
 app.use(express.json());
 app.use(cookieParser());
 // Enable URL-encoded form data parsing
+// better-auth routes
+app.use('/api/auth' , toNodeHandler(auth)); 
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", indexRoutes);

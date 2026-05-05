@@ -31,7 +31,10 @@ interface EnvConfig {
     PRODUCTION: {
         SERVER_URL: string;
         APP_URL: string;
-    }
+    },
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
+    GOOGLE_CALLBACK_URL: string;
 }
 
 const loadEnvConfig = (): EnvConfig => {
@@ -60,7 +63,10 @@ const loadEnvConfig = (): EnvConfig => {
         "STRIPE_SECRET_KEY",
         "STRIPE_WEBHOOK_SECRET",
         "PRODUCTION_SERVER_URL",
-        "PRODUCTION_APP_URL"
+        "PRODUCTION_APP_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "GOOGLE_CALLBACK_URL"
 
     ];
 
@@ -100,7 +106,10 @@ const loadEnvConfig = (): EnvConfig => {
         PRODUCTION: {
             SERVER_URL: process.env.PRODUCTION_SERVER_URL as string,
             APP_URL: process.env.PRODUCTION_APP_URL as string
-        }
+        },
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+        GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string
     }
 }
 

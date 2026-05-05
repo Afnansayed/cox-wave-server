@@ -360,9 +360,44 @@ const resetPassword = async (
       userId: isUserExist.id,
     },
   });
-
-
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const googleLoginSuccess = async (session : Record<string, any>) => {
+
+      const isCustomerExist = await prisma.customer.findUnique({
+        where: {
+          email: session.user.id,
+        },
+      });
+
+      if (!isCustomerExist) {
+        await prisma.customer.create({
+          data: {
+            name: session.user.name,
+            email: session.user.email,
+            user_id: session.user.id,
+          },
+        });
+      };
+
+    const accessToken = tokenUtils.getAccessToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    const refreshToken = tokenUtils.getRefreshToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    return {
+        accessToken,
+        refreshToken,
+    }
+}
 
 //todo: get my profile api in auth service which will return the user details from the auth service along with the customer details from the database if the user is a customer. This will be used in the frontend to display the user profile and also to check if the user is a customer or not.
 
@@ -374,5 +409,6 @@ export const authService = {
     logoutUser,
     verifyEmail,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    googleLoginSuccess,
 }

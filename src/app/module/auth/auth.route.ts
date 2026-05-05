@@ -17,4 +17,9 @@ router.post("/verify-email", authController.verifyEmail);
 router.post("/forget-password", authController.forgetPassword);
 router.post("/reset-password", authController.resetPassword);
 
+//** Google OAuth Routes */
+router.get("/login/google", authController.googleLogin);
+router.get("/google/success", authController.googleLoginSuccess);
+router.get("/oauth/error", authController.handleOAuthError);
+
 export const authRoutes: Router = router;

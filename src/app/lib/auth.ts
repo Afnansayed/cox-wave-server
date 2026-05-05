@@ -18,6 +18,23 @@ export const auth = betterAuth({
         requireEmailVerification: true,
     },
 
+    socialProviders: {
+        google: {
+            clientId: envVars.GOOGLE_CLIENT_ID,
+            clientSecret: envVars.GOOGLE_CLIENT_SECRET,
+            mapProfileToUser: () => {
+                return {
+                     role: Role.CUSTOMER,
+                     status: UserStatus.ACTIVE,
+                     needPasswordChange: false,
+                     emailVerified: true,
+                     isDeleted: false,
+                     deletedAt: null
+                }
+            }
+        }
+    },
+
     emailVerification: {
         sendOnSignIn: true,
         sendOnSignUp: true,
@@ -102,12 +119,17 @@ export const auth = betterAuth({
         }
     },
 
- trustedOrigins: [
+   redirectURLs: {
+        signIn: `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`,
+    },
+
+    trustedOrigins: [
     envVars.BETTER_AUTH_URL || "http://localhost:5000", 
     envVars.FRONTEND_URL ,
     envVars.PRODUCTION.SERVER_URL || "https://cox-wave-server.vercel.app",
     envVars.PRODUCTION.APP_URL || "https://cox-wave-client.vercel.app"
-],
+   ],
+
 
  advanced: {
         // disableCSRFCheck: true,
