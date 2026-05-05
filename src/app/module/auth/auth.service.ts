@@ -364,10 +364,10 @@ const resetPassword = async (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const googleLoginSuccess = async (session : Record<string, any>) => {
-
+  
       const isCustomerExist = await prisma.customer.findUnique({
         where: {
-          email: session.user.id,
+          email: session.user.email,
         },
       });
 
@@ -385,12 +385,18 @@ const googleLoginSuccess = async (session : Record<string, any>) => {
         userId: session.user.id,
         role: session.user.role,
         name: session.user.name,
+        status: session.user.status,
+        isDeleted: session.user.isDeleted,
+        emailVerified: session.user.emailVerified,
     });
 
     const refreshToken = tokenUtils.getRefreshToken({
         userId: session.user.id,
         role: session.user.role,
         name: session.user.name,
+        status: session.user.status,
+        isDeleted: session.user.isDeleted,
+        emailVerified: session.user.emailVerified,
     });
 
     return {
