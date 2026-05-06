@@ -83,6 +83,15 @@ export const checkAuth = (...allowedRoles: Role[]) => async (req: Request, res: 
              if(allowedRoles.length > 0 && !allowedRoles.includes(verifiedToken.data.role as Role)){
                 throw new AppError(status.FORBIDDEN, "Forbidden: You do not have permission to access this resource");
              }
+
+             if (!req.user) {
+                 req.user = {
+                     id: verifiedToken.data.userId,
+                     email: verifiedToken.data.email,
+                     role: verifiedToken.data.role as Role
+                 };
+             }
+
              next();
          }catch(error){
             next(error);
