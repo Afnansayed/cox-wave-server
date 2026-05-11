@@ -7,6 +7,7 @@ import { reviewRoutes } from "../app/module/review/review.route";
 import { bookingRoutes } from "../app/module/booking/booking.route";
 import { customerRoutes } from "../app/module/customer/customer.route";
 import { adminRoutes } from "../app/module/admin/admin.route";
+import { emailRoutes } from "../app/module/email/email.route";
 
 
 
@@ -20,6 +21,7 @@ router.use("/review", reviewRoutes);
 router.use("/booking", bookingRoutes);
 router.use("/customer", customerRoutes);
 router.use("/admin", adminRoutes);
+router.use("/email", emailRoutes);
 
 
 export const indexRoutes: Router = router;
